@@ -16,6 +16,8 @@
 package mx.bigdata.sat.cfdi.examples;
 
 import java.math.BigDecimal;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.DatatypeFactory;
@@ -45,7 +47,8 @@ public final class ExampleCFDv33Factory {
         comp.setVersion("3.3");
         comp.setSerie("F");
         comp.setFolio("12345");
-        comp.setFecha(DatatypeFactory.newInstance().newXMLGregorianCalendar(2017, 07, 1, 0, 0, 0, DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED));
+        Date date = new GregorianCalendar(2017, 6, 1, 0, 0, 0).getTime();
+        comp.setFecha(date);
 //        comp.setSello();
         comp.setFormaPago("02");
         comp.setNoCertificado("20001000000200001428");
@@ -138,7 +141,7 @@ public final class ExampleCFDv33Factory {
         tr.setBase(new BigDecimal("0.16"));
         tr.setImpuesto("002");
         tr.setTipoFactor(CTipoFactor.TASA);
-        tr.setTasaOCuota(new BigDecimal("0.160000"));
+        tr.setTasaOCuota("0.160000");
         tr.setImporte(new BigDecimal("124.00"));
         trs.getTraslado().add(tr);
         imp.setTraslados(trs);
@@ -170,7 +173,7 @@ public final class ExampleCFDv33Factory {
         Impuestos.Traslados.Traslado it = of.createComprobanteImpuestosTrasladosTraslado();
         it.setImpuesto("002");
         it.setTipoFactor(CTipoFactor.TASA);
-        it.setTasaOCuota(new BigDecimal("0.160000"));
+        it.setTasaOCuota("0.160000");
         it.setImporte(new BigDecimal("248.00"));
         its.getTraslado().add(it);
         return its;

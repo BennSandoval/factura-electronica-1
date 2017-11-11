@@ -204,7 +204,7 @@ public final class TFDv11c33 {
         TimbreFiscalDigital tfds = of.createTimbreFiscalDigital();
         tfds.setVersion("1.1");
         tfds.setUUID(uuid.toString());
-        tfds.setFechaTimbrado(DatatypeFactory.newInstance().newXMLGregorianCalendar(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DATE), c.get(Calendar.HOUR), c.get(Calendar.MINUTE), c.get(Calendar.SECOND), DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED));
+        tfds.setFechaTimbrado(date);
         tfds.setRfcProvCertif(PAC);
         tfds.setLeyenda(leyenda);
         tfds.setSelloCFD(document.getSello());
