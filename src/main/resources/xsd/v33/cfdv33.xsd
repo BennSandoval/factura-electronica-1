@@ -192,20 +192,10 @@
                                           <xs:documentation>Atributo condicional para señalar el valor de la tasa o cuota del impuesto que se traslada para el presente concepto. Es requerido cuando el atributo TipoFactor tenga una clave que corresponda a Tasa o Cuota.</xs:documentation>
                                         </xs:annotation>
                                         <xs:simpleType>
-                                          <xs:restriction base="xs:string">
+                                          <xs:restriction base="xs:decimal">
+                                            <xs:fractionDigits value="6"/>
+                                            <xs:minInclusive value="0.000000"/>
                                             <xs:whiteSpace value="collapse"/>
-                                            <xs:enumeration value="0.000000"/>
-                                            <xs:enumeration value="0.160000"/>
-                                            <xs:enumeration value="0.265000"/>
-                                            <xs:enumeration value="0.300000"/>
-                                            <xs:enumeration value="0.530000"/>
-                                            <xs:enumeration value="0.500000"/>
-                                            <xs:enumeration value="1.600000"/>
-                                            <xs:enumeration value="0.304000"/>
-                                            <xs:enumeration value="0.350000"/>
-                                            <xs:enumeration value="0.059100"/>
-                                            <xs:enumeration value="3.000000"/>
-                                            <xs:enumeration value="0.298800"/>
                                           </xs:restriction>
                                         </xs:simpleType>
                                       </xs:attribute>
@@ -257,20 +247,10 @@
                                           <xs:documentation>Atributo requerido para señalar la tasa o cuota del impuesto que se retiene para el presente concepto.</xs:documentation>
                                         </xs:annotation>
                                         <xs:simpleType>
-                                          <xs:restriction base="xs:string">
+                                          <xs:restriction base="xs:decimal">
+                                            <xs:fractionDigits value="6"/>
+                                            <xs:minInclusive value="0.000000"/>
                                             <xs:whiteSpace value="collapse"/>
-                                            <xs:enumeration value="0.000000"/>
-                                            <xs:enumeration value="0.160000"/>
-                                            <xs:enumeration value="0.265000"/>
-                                            <xs:enumeration value="0.300000"/>
-                                            <xs:enumeration value="0.530000"/>
-                                            <xs:enumeration value="0.500000"/>
-                                            <xs:enumeration value="1.600000"/>
-                                            <xs:enumeration value="0.304000"/>
-                                            <xs:enumeration value="0.350000"/>
-                                            <xs:enumeration value="0.059100"/>
-                                            <xs:enumeration value="3.000000"/>
-                                            <xs:enumeration value="0.298800"/>
                                           </xs:restriction>
                                         </xs:simpleType>
                                       </xs:attribute>
@@ -568,20 +548,10 @@
                               <xs:documentation>Atributo requerido para señalar el valor de la tasa o cuota del impuesto que se traslada por los conceptos amparados en el comprobante.</xs:documentation>
                             </xs:annotation>
                             <xs:simpleType>
-                              <xs:restriction base="xs:string">
+                              <xs:restriction base="xs:decimal">
+                                <xs:fractionDigits value="6"/>
+                                <xs:minInclusive value="0.000000"/>
                                 <xs:whiteSpace value="collapse"/>
-                                <xs:enumeration value="0.000000"/>
-                                <xs:enumeration value="0.160000"/>
-                                <xs:enumeration value="0.265000"/>
-                                <xs:enumeration value="0.300000"/>
-                                <xs:enumeration value="0.530000"/>
-                                <xs:enumeration value="0.500000"/>
-                                <xs:enumeration value="1.600000"/>
-                                <xs:enumeration value="0.304000"/>
-                                <xs:enumeration value="0.350000"/>
-                                <xs:enumeration value="0.059100"/>
-                                <xs:enumeration value="3.000000"/>
-                                <xs:enumeration value="0.298800"/>
                               </xs:restriction>
                             </xs:simpleType>
                           </xs:attribute>
