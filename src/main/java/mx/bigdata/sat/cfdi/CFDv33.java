@@ -19,17 +19,18 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.security.PrivateKey;
-import java.security.Signature;
-import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import mx.bigdata.sat.cfdi.v33.schema.Comprobante;
+import mx.bigdata.sat.cfdi.v33.schema.ObjectFactory;
+import mx.bigdata.sat.common.ComprobanteBase;
+import mx.bigdata.sat.common.NamespacePrefixMapperImpl;
+import mx.bigdata.sat.common.URIResolverImpl;
+import mx.bigdata.sat.security.KeyLoaderEnumeration;
+import mx.bigdata.sat.security.factory.KeyLoaderFactory;
+import org.apache.commons.codec.binary.Base64;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.ErrorHandler;
+
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
@@ -46,65 +47,58 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
-import mx.bigdata.sat.cfdi.v33.schema.Comprobante;
-import mx.bigdata.sat.cfdi.v33.schema.ObjectFactory;
-import mx.bigdata.sat.common.ComprobanteBase33;
-import mx.bigdata.sat.common.NamespacePrefixMapperImpl;
-import mx.bigdata.sat.common.URIResolverImpl;
-import mx.bigdata.sat.security.KeyLoaderEnumeration;
-import mx.bigdata.sat.security.factory.KeyLoaderFactory;
-import org.apache.commons.codec.binary.Base64;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.xml.sax.ErrorHandler;
+import java.io.*;
+import java.security.PrivateKey;
+import java.security.Signature;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-public final class CFDv33 implements CFDI33 {
+public final class CFDv33 implements CFDI {
 
     private static final String XSLT = "/xslt/cadenaoriginal_3_3.xslt";
 
     private static final String[] XSD = new String[]{
-        "/xsd/common/tdCFDI.xsd",
-        "/xsd/common/catCFDI.xsd",
-        "/xsd/common/catNomina.xsd",
-        "/xsd/common/catComExt.xsd",
-        "/xsd/v33/cfdv33.xsd",
-        "/xsd/v33/TimbreFiscalDigitalv11.xsd",
-        "/xsd/common/ecc/v10/ecc.xsd",
-        "/xsd/common/ecc/v11/ecc11.xsd",
-        "/xsd/common/donat/v11/donat11.xsd",
-        "/xsd/common/divisas/divisas.xsd",
-        "/xsd/common/implocal/implocal.xsd",
-        "/xsd/common/leyendasFisc/leyendasFisc.xsd",
-        "/xsd/common/pfic/pfic.xsd",
-        "/xsd/common/TuristaPasajeroExtranjero/TuristaPasajeroExtranjero.xsd",
-        "/xsd/common/spei/spei.xsd",
-        "/xsd/common/detallista/detallista.xsd",
-        "/xsd/common/cfdiregistrofiscal/cfdiregistrofiscal.xsd",
-        "/xsd/common/nomina/v11/nomina11.xsd",
-        "/xsd/common/nomina/v12/nomina12.xsd",
-        "/xsd/common/pagoenespecie/pagoenespecie.xsd",
-        "/xsd/common/valesdedespensa/valesdedespensa.xsd",
-        "/xsd/common/consumodecombustibles/consumodecombustibles.xsd",
-        "/xsd/common/aerolineas/aerolineas.xsd",
-        "/xsd/common/notariospublicos/notariospublicos.xsd",
-        "/xsd/common/vehiculousado/vehiculousado.xsd",
-        "/xsd/common/servicioparcialconstruccion/servicioparcialconstruccion.xsd",
-        "/xsd/common/renovacionysustitucionvehiculos/renovacionysustitucionvehiculos.xsd",
-        "/xsd/common/certificadodedestruccion/certificadodedestruccion.xsd",
-        "/xsd/common/obrasarteantiguedades/obrasarteantiguedades.xsd",
-        "/xsd/common/ine/v11/INE11.xsd",
-        "/xsd/common/ComercioExterior/v10/ComercioExterior10.xsd",
-        "/xsd/common/ComercioExterior/v11/ComercioExterior11.xsd",
-        "/xsd/common/catPagos.xsd",
-        "/xsd/common/Pagos/Pagos10.xsd",
-        "/xsd/common/iedu/iedu.xsd",
-        "/xsd/common/ventavehiculos/v10/ventavehiculos.xsd",
-        "/xsd/common/ventavehiculos/v11/ventavehiculos11.xsd",
-        "/xsd/common/terceros/terceros11.xsd",
-        "/xsd/common/AcreditamientoIEPS/AcreditamientoIEPS10.xsd",
-        "/xsd/common/ecb/ecb.xsd",
-        "/xsd/common/psgcfdsp/psgcfdsp.xsd",
-        "/xsd/common/psgecfd/psgecfd.xsd"
+            "/xsd/common/tdCFDI.xsd",
+            "/xsd/common/catCFDI.xsd",
+            "/xsd/v33/cfdv33.xsd",
+            "/xsd/v33/TimbreFiscalDigitalv11.xsd",
+            "/xsd/common/ecc/v11/ecc11.xsd",
+            "/xsd/common/donat/v11/donat11.xsd",
+            "/xsd/common/divisas/divisas.xsd",
+            "/xsd/common/implocal/implocal.xsd",
+            "/xsd/common/leyendasFisc/leyendasFisc.xsd",
+            "/xsd/common/pfic/pfic.xsd",
+            "/xsd/common/TuristaPasajeroExtranjero/TuristaPasajeroExtranjero.xsd",
+            "/xsd/common/spei/spei.xsd",
+            "/xsd/common/detallista/detallista.xsd",
+            "/xsd/common/cfdiregistrofiscal/cfdiregistrofiscal.xsd",
+            "/xsd/common/nomina/catNomina.xsd",
+            "/xsd/common/nomina/v12/nomina12.xsd",
+            "/xsd/common/pagoenespecie/pagoenespecie.xsd",
+            "/xsd/common/valesdedespensa/valesdedespensa.xsd",
+            "/xsd/common/consumodecombustibles/consumodecombustibles.xsd",
+            "/xsd/common/aerolineas/aerolineas.xsd",
+            "/xsd/common/notariospublicos/notariospublicos.xsd",
+            "/xsd/common/vehiculousado/vehiculousado.xsd",
+            "/xsd/common/servicioparcialconstruccion/servicioparcialconstruccion.xsd",
+            "/xsd/common/renovacionysustitucionvehiculos/renovacionysustitucionvehiculos.xsd",
+            "/xsd/common/certificadodedestruccion/certificadodedestruccion.xsd",
+            "/xsd/common/obrasarteantiguedades/obrasarteantiguedades.xsd",
+            "/xsd/common/ine/v11/INE11.xsd",
+            "/xsd/common/ComercioExterior/catComExt.xsd",
+            "/xsd/common/ComercioExterior/v11/ComercioExterior11.xsd",
+            "/xsd/common/Pagos/catPagos.xsd",
+            "/xsd/common/Pagos/Pagos10.xsd",
+            "/xsd/common/iedu/iedu.xsd",
+            "/xsd/common/ventavehiculos/v11/ventavehiculos11.xsd",
+            "/xsd/common/terceros/terceros11.xsd",
+            "/xsd/common/AcreditamientoIEPS/AcreditamientoIEPS10.xsd",
+            "/xsd/common/ecb/ecb.xsd",
+            "/xsd/common/psgcfdsp/psgcfdsp.xsd",
+            "/xsd/common/psgecfd/psgecfd.xsd"
     };
 
     private static final String XML_HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
@@ -133,6 +127,7 @@ public final class CFDv33 implements CFDI33 {
         this.document = copy(comprobante);
     }
 
+    @Override
     public void addNamespace(String uri, String prefix) {
         localPrefixes.put(uri, prefix);
     }
@@ -235,13 +230,12 @@ public final class CFDv33 implements CFDI33 {
         m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
         m.setProperty(Marshaller.JAXB_SCHEMA_LOCATION, getSchemaLocation());
         byte[] xmlHeaderBytes = XML_HEADER.getBytes("UTF8");
-
         out.write(xmlHeaderBytes);
-
         m.marshal(document, out);
     }
 
-    //Se implementó este método para que agregue los esquemas y los namespace's de manera automática (solo hay que enviar los contexts en el constructor)
+
+    //Se implementó este método para que agregue los esquemas de manera automática (solo hay que enviar los contexts en el constructor)
     //Se deben agregar todos los complementos en todas sus versiones (tambien a todas las versiones de CFDi según sus complementos)
     private String getSchemaLocation() throws Exception {
         List<String> contexts = new ArrayList<>();
@@ -249,18 +243,20 @@ public final class CFDv33 implements CFDI33 {
         if (document != null && document.getComplemento() != null && document.getComplemento().size() > 0) {
             for (Comprobante.Complemento o : document.getComplemento()) {
                 for (Object c : o.getAny()) {
-                    if (c instanceof mx.bigdata.sat.cfdi.schema.TimbreFiscalDigital || c instanceof mx.bigdata.sat.cfdi.v33.schema.TimbreFiscalDigital) {
-                        schema += " http://www.sat.gob.mx/TimbreFiscalDigital http://www.sat.gob.mx/sitio_internet/cfd/TimbreFiscalDigital/TimbreFiscalDigitalv11.xsd";
-                        addNamespace("http://www.sat.gob.mx/TimbreFiscalDigital", "tfd");
+                    if (c instanceof mx.bigdata.sat.cfdi.v33.schema.TimbreFiscalDigital) {
+                        //El schema location debe de ir en el nodo de TFD, no en el de comprobante.
                     } else if (c instanceof mx.bigdata.sat.common.nomina.v12.schema.Nomina) {
-                        schema += " http://www.sat.gob.mx/nomina12 http://www.sat.gob.mx/sitio_internet/cfd/nomina/nomina12.xsd";
-                        addNamespace("http://www.sat.gob.mx/nomina12", "nomina12");
+                        if (!schema.contains("http://www.sat.gob.mx/nomina12 http://www.sat.gob.mx/sitio_internet/cfd/nomina/nomina12.xsd")) {
+                            schema += " http://www.sat.gob.mx/nomina12 http://www.sat.gob.mx/sitio_internet/cfd/nomina/nomina12.xsd";
+                        }
                     } else if (c instanceof mx.bigdata.sat.common.implocal.schema.ImpuestosLocales) {
-                        schema += " http://www.sat.gob.mx/implocal http://www.sat.gob.mx/sitio_internet/cfd/implocal/implocal.xsd";
-                        addNamespace("http://www.sat.gob.mx/implocal", "implocal");
+                        if (!schema.contains("http://www.sat.gob.mx/implocal http://www.sat.gob.mx/sitio_internet/cfd/implocal/implocal.xsd")) {
+                            schema += " http://www.sat.gob.mx/implocal http://www.sat.gob.mx/sitio_internet/cfd/implocal/implocal.xsd";
+                        }
                     } else if (c instanceof mx.bigdata.sat.common.pagos.schema.Pagos) {
-                        schema += " http://www.sat.gob.mx/Pagos http://www.sat.gob.mx/sitio_internet/cfd/Pagos/Pagos10.xsd";
-                        addNamespace("http://www.sat.gob.mx/Pagos", "pago10");
+                        if (!schema.contains("http://www.sat.gob.mx/Pagos http://www.sat.gob.mx/sitio_internet/cfd/Pagos/Pagos10.xsd")) {
+                            schema += " http://www.sat.gob.mx/Pagos http://www.sat.gob.mx/sitio_internet/cfd/Pagos/Pagos10.xsd";
+                        }
                     } else {
                         System.out.println("El complemento " + c + " aún no ha sido declarado.");
                     }
@@ -324,7 +320,7 @@ public final class CFDv33 implements CFDI33 {
     }
 
     @Override
-    public ComprobanteBase33 getComprobante() throws Exception {
+    public ComprobanteBase getComprobante() throws Exception {
         return new CFDv33ComprobanteBase(doGetComprobante());
     }
 
@@ -344,7 +340,7 @@ public final class CFDv33 implements CFDI33 {
         return (Comprobante) u.unmarshal(doc);
     }
 
-    public static final class CFDv33ComprobanteBase implements ComprobanteBase33 {
+    public static final class CFDv33ComprobanteBase implements ComprobanteBase {
 
         private final Comprobante document;
 
@@ -358,8 +354,10 @@ public final class CFDv33 implements CFDI33 {
         }
 
         @Override
-        public List<Comprobante.Complemento> getComplementoGetAny() {
-            return document.getComplemento();
+        public List<Object> getComplementoGetAny() {
+            return document.getComplemento().stream()
+                    .map(complemento -> (Object) complemento)
+                    .collect(Collectors.toList());
         }
 
         @Override

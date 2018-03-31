@@ -15,29 +15,18 @@
  */
 package mx.bigdata.sat.cfdi.examples;
 
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
-import javax.xml.datatype.DatatypeConstants;
-import javax.xml.datatype.DatatypeFactory;
-import mx.bigdata.sat.cfdi.v33.schema.CMetodoPago;
-import mx.bigdata.sat.cfdi.v33.schema.CMoneda;
-import mx.bigdata.sat.cfdi.v33.schema.CPais;
-import mx.bigdata.sat.cfdi.v33.schema.CTipoDeComprobante;
-import mx.bigdata.sat.cfdi.v33.schema.CTipoFactor;
-import mx.bigdata.sat.cfdi.v33.schema.CUsoCFDI;
-import mx.bigdata.sat.cfdi.v33.schema.Comprobante;
-import mx.bigdata.sat.cfdi.v33.schema.Comprobante.CfdiRelacionados;
+
+import mx.bigdata.sat.cfdi.v33.schema.*;
+import mx.bigdata.sat.cfdi.v33.schema.Comprobante.*;
 import mx.bigdata.sat.cfdi.v33.schema.Comprobante.CfdiRelacionados.CfdiRelacionado;
-import mx.bigdata.sat.cfdi.v33.schema.Comprobante.Conceptos;
 import mx.bigdata.sat.cfdi.v33.schema.Comprobante.Conceptos.Concepto;
 import mx.bigdata.sat.cfdi.v33.schema.Comprobante.Conceptos.Concepto.CuentaPredial;
 import mx.bigdata.sat.cfdi.v33.schema.Comprobante.Conceptos.Concepto.InformacionAduanera;
-import mx.bigdata.sat.cfdi.v33.schema.Comprobante.Emisor;
-import mx.bigdata.sat.cfdi.v33.schema.Comprobante.Impuestos;
-import mx.bigdata.sat.cfdi.v33.schema.Comprobante.Receptor;
-import mx.bigdata.sat.cfdi.v33.schema.ObjectFactory;
+
+import javax.xml.datatype.DatatypeConstants;
+import javax.xml.datatype.DatatypeFactory;
+import java.math.BigDecimal;
+import java.util.List;
 
 public final class ExampleCFDv33Factory {
 
@@ -47,8 +36,7 @@ public final class ExampleCFDv33Factory {
         comp.setVersion("3.3");
         comp.setSerie("F");
         comp.setFolio("12345");
-        Date date = new GregorianCalendar(2017, 6, 1, 0, 0, 0).getTime();
-        comp.setFecha(date);
+        comp.setFecha(DatatypeFactory.newInstance().newXMLGregorianCalendar(2017, 07, 1, 0, 0, 0, DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED));
 //        comp.setSello();
         comp.setFormaPago("02");
         comp.setNoCertificado("20001000000200001428");
