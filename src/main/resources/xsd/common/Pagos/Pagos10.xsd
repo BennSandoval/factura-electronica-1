@@ -1,5 +1,30 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<xs:schema xmlns:pago10="http://www.sat.gob.mx/Pagos" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:catCFDI="http://www.sat.gob.mx/sitio_internet/cfd/catalogos" xmlns:tdCFDI="http://www.sat.gob.mx/sitio_internet/cfd/tipoDatos/tdCFDI" xmlns:catPagos="http://www.sat.gob.mx/sitio_internet/cfd/catalogos/Pagos" targetNamespace="http://www.sat.gob.mx/Pagos" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<xs:schema xmlns:pago10="http://www.sat.gob.mx/Pagos"
+		   xmlns:xs="http://www.w3.org/2001/XMLSchema"
+		   xmlns:catCFDI="http://www.sat.gob.mx/sitio_internet/cfd/catalogos"
+		   xmlns:tdCFDI="http://www.sat.gob.mx/sitio_internet/cfd/tipoDatos/tdCFDI"
+		   xmlns:catPagos="http://www.sat.gob.mx/sitio_internet/cfd/catalogos/Pagos"
+		   targetNamespace="http://www.sat.gob.mx/Pagos"
+		   elementFormDefault="qualified"
+		   attributeFormDefault="unqualified"
+		   xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+           xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+		   jaxb:extensionBindingPrefixes="xjc" jaxb:version="2.1">
+
+	<xs:annotation>
+		<xs:appinfo>
+			<jaxb:globalBindings>
+                <xjc:serializable uid="-6026937020915831339" />
+				<jaxb:javaType
+                    name="java.util.Date"
+                    xmlType="xs:dateTime"
+                    parseMethod="mx.bigdata.sat.schema.binder.DateTimeCustomBinder.parseDateTime"
+                    printMethod="mx.bigdata.sat.schema.binder.DateTimeCustomBinder.printDateTime"
+				/>
+			</jaxb:globalBindings>
+		</xs:appinfo>
+	</xs:annotation>
+
 	<xs:import namespace="http://www.sat.gob.mx/sitio_internet/cfd/catalogos" schemaLocation="./../catCFDI.xsd"/>
 	<xs:import namespace="http://www.sat.gob.mx/sitio_internet/cfd/tipoDatos/tdCFDI" schemaLocation="./../tdCFDI.xsd"/>
 	<xs:import namespace="http://www.sat.gob.mx/sitio_internet/cfd/catalogos/Pagos" schemaLocation="./../catPagos.xsd"/>

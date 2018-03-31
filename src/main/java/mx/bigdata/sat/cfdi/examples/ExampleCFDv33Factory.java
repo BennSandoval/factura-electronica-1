@@ -68,6 +68,8 @@ public final class ExampleCFDv33Factory {
         comp.setReceptor(createReceptor(of));
         comp.setConceptos(createConceptos(of));
         comp.setImpuestos(createImpuestos(of));
+
+
         return comp;
     }
 
