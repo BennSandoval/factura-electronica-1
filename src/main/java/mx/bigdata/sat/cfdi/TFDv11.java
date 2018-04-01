@@ -195,7 +195,7 @@ public final class TFDv11 {
         tfds.setUUID(uuid.toString());
         Calendar c = Calendar.getInstance();
         c.setTime(date);
-        tfds.setFechaTimbrado(date);
+        tfds.setFechaTimbrado(DatatypeFactory.newInstance().newXMLGregorianCalendar(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH), c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), c.get(Calendar.SECOND), DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED));
         tfds.setRfcProvCertif(PAC);
         tfds.setLeyenda(leyenda);
         tfds.setSelloCFD(document.getSello());
