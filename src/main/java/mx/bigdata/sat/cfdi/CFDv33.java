@@ -245,12 +245,6 @@ public final class CFDv33 implements CFDI {
                 for (Object c : o.getAny()) {
                     if (c instanceof mx.bigdata.sat.cfdi.v33.schema.TimbreFiscalDigital) {
                         //El schema location debe de ir en el nodo de TFD, no en el de comprobante.
-                        /*
-                        if (!schema.contains("http://www.sat.gob.mx/TimbreFiscalDigital http://www.sat.gob.mx/sitio_internet/cfd/TimbreFiscalDigital/TimbreFiscalDigitalv11.xsd")) {
-                            schema += " http://www.sat.gob.mx/TimbreFiscalDigital http://www.sat.gob.mx/sitio_internet/cfd/TimbreFiscalDigital/TimbreFiscalDigitalv11.xsd";
-                            addNamespace("http://www.sat.gob.mx/TimbreFiscalDigital", "tfd");
-                        }
-                        */
                     } else if (c instanceof mx.bigdata.sat.common.nomina.v12.schema.Nomina) {
                         if (!schema.contains("http://www.sat.gob.mx/nomina12 http://www.sat.gob.mx/sitio_internet/cfd/nomina/nomina12.xsd")) {
                             schema += " http://www.sat.gob.mx/nomina12 http://www.sat.gob.mx/sitio_internet/cfd/nomina/nomina12.xsd";
